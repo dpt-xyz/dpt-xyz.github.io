@@ -5,7 +5,7 @@ group :jekyll_plugins do
     gem 'jekyll-diagrams'
     gem 'jekyll-email-protect'
     gem 'jekyll-feed'
-    gem 'jekyll-imagemagick'
+    # gem 'jekyll-imagemagick'
     gem 'jekyll-minifier'
     gem 'jekyll-paginate-v2'
     gem 'jekyll-scholar'
@@ -21,3 +21,5 @@ group :other_plugins do
     gem 'httparty'
     gem 'feedjira'
 end
+
+# gem "jekyll-diagrams", "~> 0.10.0"

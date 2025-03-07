@@ -2,7 +2,7 @@ ________________________________________________________________________________
 Serve the Jekyll Site:
 Note: If we run the above command, it overwrites everything in _site folder.
 ----------------------------------------------------------------------------------------
-
+bundle exec jekyll clean <!-- No need to run this everytime -->
 bundle exec jekyll serve
 or
 jekyll serve
