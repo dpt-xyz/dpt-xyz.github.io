@@ -12,7 +12,11 @@
   <meta property="og:url" content="https://deepti.xyz/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='8' y='1.5' width='16' height='29' rx='5' fill='%232A343C'/%3E%3Crect x='11.5' y='0' width='9' height='3' rx='1.5' fill='%232A343C'/%3E%3Ccircle cx='16' cy='9' r='3.7' fill='%23E5484D'/%3E%3Ccircle cx='16' cy='16' r='3.7' fill='%23F0A94C'/%3E%3Ccircle cx='16' cy='23' r='3.7' fill='%233FA46A'/%3E%3C/svg%3E">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500&family=Caveat:wght@400&display=swap" rel="stylesheet">
@@ -53,26 +57,58 @@
   </symbol>
 </svg>
 
+<div class="lane-road" aria-hidden="true"></div>
 <div class="lane-rail" aria-hidden="true"></div>
 <div class="lane-trail" id="lane-trail" aria-hidden="true"></div>
 <div class="lane-rider" id="lane-rider" aria-hidden="true">
-  <svg width="62" height="35" viewBox="0 0 84 48" fill="none">
-    <path d="M7.5 34.5c-2-7.6 1.2-11.2 7.8-12.3l7.4-8.7c2.7-3.1 6.6-4.6 11.8-4.6h8.8c5.2 0 9 1.6 11.6 4.6l7.5 8.7c6.6 1.1 9.8 4.7 7.8 12.3z"
-          style="fill:var(--card)" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
-    <path d="M23 22.2c9-1.7 28.5-1.7 37.5.1M42.5 10v12.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-    <circle cx="24" cy="35.5" r="7.2" style="fill:var(--paper)" stroke="currentColor" stroke-width="2.4"/>
-    <circle cx="59.5" cy="35.5" r="7.2" style="fill:var(--paper)" stroke="currentColor" stroke-width="2.4"/>
-    <path d="M72.5 27.5h4.5M6 30.5H2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Two vehicles, both seen from overhead and nose down so they share the
+       road's viewpoint. site.js shows one and alternates on every load. Each is
+       symmetric about x=20 of its 40-unit box, so neither needs a centring
+       nudge the way the old side-on car did. The gaze cone is drawn first, so
+       it sits behind the vehicle and emerges from under its front; it reaches
+       past the viewBox on purpose, since the svg overflows visible. -->
+  <svg class="ride ride--scooter" width="34" height="58" viewBox="0 0 40 68" fill="none"
+       stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+    <g class="gaze">
+      <path d="M20 31L5 96L35 96Z" stroke="none" style="fill:var(--marigold)" opacity="0.13"/>
+      <path d="M20 31L5 96M20 31L35 96" stroke-width="1.6" stroke-dasharray="4 4"
+            style="stroke:var(--marigold)" opacity="0.5"/>
+    </g>
+    <rect x="17.2" y="4" width="5.6" height="15" rx="2.5" stroke-width="1.8" style="fill:var(--sunk)"/>
+    <rect x="17.2" y="49" width="5.6" height="15" rx="2.5" stroke-width="1.8" style="fill:var(--sunk)"/>
+    <rect x="13.5" y="16" width="13" height="36" rx="6" stroke-width="2.2" style="fill:var(--card)"/>
+    <path d="M8.5 46H31.5" stroke-width="2.2"/>
+    <rect x="10.5" y="26" width="19" height="12" rx="6" stroke-width="2.2" style="fill:var(--card)"/>
+    <path d="M12.6 33C10.6 38 9.6 42 9.3 45.2" stroke-width="1.7"/>
+    <path d="M27.4 33C29.4 38 30.4 42 30.7 45.2" stroke-width="1.7"/>
+    <circle cx="20" cy="31" r="6.2" stroke-width="2.2" style="fill:var(--card)"/>
+  </svg>
+
+  <svg class="ride ride--car" width="34" height="58" viewBox="0 0 40 68" fill="none"
+       stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+    <g class="gaze">
+      <path d="M20 31L5 96L35 96Z" stroke="none" style="fill:var(--marigold)" opacity="0.13"/>
+      <path d="M20 31L5 96M20 31L35 96" stroke-width="1.6" stroke-dasharray="4 4"
+            style="stroke:var(--marigold)" opacity="0.5"/>
+    </g>
+    <rect x="2.6" y="10" width="6" height="13" rx="2.5" stroke-width="1.8" style="fill:var(--sunk)"/>
+    <rect x="31.4" y="10" width="6" height="13" rx="2.5" stroke-width="1.8" style="fill:var(--sunk)"/>
+    <rect x="2.6" y="45" width="6" height="13" rx="2.5" stroke-width="1.8" style="fill:var(--sunk)"/>
+    <rect x="31.4" y="45" width="6" height="13" rx="2.5" stroke-width="1.8" style="fill:var(--sunk)"/>
+    <rect x="6" y="2" width="28" height="64" rx="11" stroke-width="2.4" style="fill:var(--card)"/>
+    <rect x="10.5" y="22" width="19" height="24" rx="4.5" stroke-width="1.8"/>
+    <path d="M10.5 22C12.5 18.4 27.5 18.4 29.5 22" stroke-width="1.8"/>
+    <path d="M10.5 46C12.5 49.6 27.5 49.6 29.5 46" stroke-width="1.8"/>
   </svg>
 </div>
 
 <nav class="nav" aria-label="Site">
   <div class="nav-inner">
     <a class="brand" href="#about">Deepti Rawat</a>
-    <ul class="label">
-      <li><a href="#about">About</a></li>
-      <li><a href="#publications">Publications</a></li>
-      <li><a href="#news">News</a></li>
+    <ul class="signs label">
+      <li><a href="#about">About<span class="km" aria-hidden="true"></span></a></li>
+      <li><a href="#publications">Publications<span class="km" aria-hidden="true"></span></a></li>
+      <li><a href="#news">News<span class="km" aria-hidden="true"></span></a></li>
     </ul>
   </div>
 </nav>
@@ -99,8 +135,6 @@
     <a href="assets/pdf/cv.pdf" aria-label="Resume"><svg aria-hidden="true"><use href="#i-cv"/></svg><span class="tip label" aria-hidden="true">Resume</span></a>
   </div>
   <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
-  <a class="scroll-cue label" href="#publications">Publications &amp; news
-  </a>
 </section>
 
 <!-- ================= PUBLICATIONS ================= -->
@@ -284,7 +318,7 @@
 <!-- ================= FOOTER ================= -->
 <footer>
   <div class="wrap">
-    <p class="credit">© 2026 Deepti Rawat · Drawn and redrawn with <a href="https://claude.com/claude-code">Claude</a>. If you're reading this, the iterations worked.</p>
+    <p class="credit">© 2026 Deepti Rawat · Drawn and redrawn with Claude. If you're reading this, the iterations worked.</p>
   </div>
 </footer>
 
