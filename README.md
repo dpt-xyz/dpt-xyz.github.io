@@ -1,7 +1,4 @@
-# My Portfolio (work in progress)
-
-[![deploy](https://github.com/Siddhant-Ray/Siddhant-Ray.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/Siddhant-Ray/Siddhant-Ray.github.io/actions/workflows/deploy.yml)
-[![demo](https://img.shields.io/badge/theme-demo-brightgreen.svg)](https://siddhant-ray.github.io/)
+# My Portfolio
 
 A simple, clean, and responsive [Jekyll](https://jekyllrb.com/) theme for academics.
 If you like the theme, give it a star! This repository is based of [`al-folio`](https://github.com/alshedivat/al-folio) with some cool modifications.
