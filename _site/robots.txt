@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://dpt-xyz.github.io/sitemap.xml
