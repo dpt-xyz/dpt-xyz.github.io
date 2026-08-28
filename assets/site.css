@@ -24,6 +24,10 @@
   --t-h2: 1.625rem;      /* section headings */
   --t-h1: 2.125rem;      /* name */
 
+  /* One number owns the vertical rhythm: every section holds this much above
+     and below itself, so any two sections sit exactly twice it apart. */
+  --gap-section: 100px;
+
   /* Weights: 300 long-form prose, 400 UI default, 500 headings and labels. */
   --w-prose: 300;
   --w-ui: 400;
@@ -97,12 +101,29 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
   border-radius: 3px;
 }
 
-.wrap { max-width: 800px; margin: 0 auto; padding: 0 22px; }
+/* Horizontal longhands only. As `padding: 0 22px` this shorthand also set
+   padding-top/bottom to zero, and because a class beats an element selector it
+   silently overrode `section`'s vertical rhythm on every section but About. */
+.wrap { max-width: 800px; margin: 0 auto; padding-left: 22px; padding-right: 22px; }
 
-/* ---------- Lane: road travelled turns amber ---------- */
+/* ---------- Lane: a road down the left margin, travelled tarmac turns amber
+   Road semantics, kept honest: solid edge lines, dashed centre line. The centre
+   line is unpainted ahead of the car and amber behind it. ---------- */
+.lane-road {
+  position: fixed;
+  top: 0;
+  left: 14px;
+  width: 46px;
+  height: 100vh;
+  z-index: 4;
+  pointer-events: none;
+  background: var(--sunk);
+  border-left: 1.5px solid var(--rule);
+  border-right: 1.5px solid var(--rule);
+}
 .lane-rail, .lane-trail {
   position: fixed;
-  left: 22px;
+  left: 35.5px;
   width: 3px;
   z-index: 5;
   pointer-events: none;
@@ -114,21 +135,36 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
 .lane-rider {
   position: fixed;
   top: 0;
-  left: 23.5px;
+  left: 37px;
   z-index: 6;
   pointer-events: none;
-  transform: translate(-50%, 0) rotate(90deg);
-  transform-origin: center;
+  /* no rotation any more: the scooter is drawn nose-down to begin with. Both
+     axes are centred, so `top` is the rider's centre and lines up with the
+     roadside sign it is passing. */
+  transform: translate(-50%, -50%);
   color: var(--ink);
   will-change: top;
 }
-.lane-rider svg { display: block; overflow: visible; }
+/* Two vehicles share the road, one per visit. The scooter is the default so a
+   reader with scripting off still gets one, and site.js swaps in the car. */
+.lane-rider .ride { display: none; overflow: visible; }
+.lane-rider .ride--scooter { display: block; }
+.lane-rider.ride-car .ride--scooter { display: none; }
+.lane-rider.ride-car .ride--car { display: block; }
+
+/* Where the rider is looking. Hidden while you scroll back up, on the same
+   rule as the exhaust: neither belongs to a journey run in reverse. */
+.lane-rider .gaze { transition: opacity 0.3s ease; }
+.lane-rider.reversing .gaze { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .lane-rider .gaze { transition: none; } }
 
 .puff {
   position: fixed;
   z-index: 6;
   pointer-events: none;
   color: var(--ink);
+  /* grow from the tail, which is the end sitting on the exhaust */
+  transform-origin: 45% 93%;
   animation: puff-rise 2.6s ease-out forwards;
 }
 @keyframes puff-rise {
@@ -137,7 +173,9 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
   60%  { opacity: 0.7; }
   100% { opacity: 0; transform: translate(-50%, -78px) scale(1.35) rotate(11deg); }
 }
-@media (max-width: 1040px) { .lane-rail, .lane-trail, .lane-rider, .puff { display: none; } }
+@media (max-width: 1040px) {
+  .lane-road, .lane-rail, .lane-trail, .lane-rider, .puff { display: none; }
+}
 @media (prefers-reduced-motion: reduce) { .puff { display: none; } }
 
 /* ---------- Nav ---------- */
@@ -174,10 +212,111 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
 .nav ul { display: flex; gap: 22px; list-style: none; }
 .nav ul a { color: var(--ink-soft); }
 .nav ul a:hover { color: var(--marigold); text-decoration: none; }
+/* the distance readout belongs to the roadside signs only */
+.nav .signs .km { display: none; }
 
-/* One vertical rhythm: every section owns 72px above and below itself,
-   so the gap between any two sections is a consistent 144px. */
-section { padding: 72px 0; scroll-margin-top: 66px; }
+/* ---------- Roadside signs: the same nav, mounted along the road ----------
+   Wherever the road shows, the top bar becomes three signboards posted beside
+   it, each parked at the point on the road where its section begins. The car
+   drives past them; whichever section it is inside lights that sign amber.
+   Narrower than the road's own cutoff there is no gutter to post signs in, and
+   this all reverts to the ordinary top bar — which is why the markup is one
+   nav rather than two. */
+@media (min-width: 1041px) {
+  /* Keep at least 210px clear to the left of the text column for road and
+     signs. Above 1220px the natural margin already covers it and nothing
+     moves; below that the column steps right by exactly the shortfall. */
+  body { padding-left: max(0px, calc(1220px - 100vw)); }
+
+  .nav {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    width: 200px;
+    background: none;
+    backdrop-filter: none;
+    border-bottom: 0;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+    pointer-events: none;
+  }
+  .nav-inner { display: block; padding: 0; max-width: none; margin: 0; }
+
+  /* no name board here: the road carries the sections, and the h1 already
+     carries the name. The brand stays in the narrow-screen top bar. */
+  .nav .brand { display: none; }
+
+  .nav .signs { display: block; }
+  .nav .signs li {
+    position: absolute;
+    left: 72px;
+    transform: translateY(-50%);
+    transition: top 0.15s linear;
+  }
+  /* the post that mounts the sign to the road edge */
+  .nav .signs li::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    width: 12px;
+    height: 1.5px;
+    margin-top: -0.75px;
+    background: var(--rule);
+    transition: background 0.25s ease;
+  }
+  .nav .signs a {
+    display: block;
+    padding: 7px 12px;
+    /* road signs name places in mixed case, and it fits the gutter where
+       the site's usual uppercase label would not */
+    font-size: var(--t-label);
+    font-weight: var(--w-strong);
+    letter-spacing: 0.01em;
+    text-transform: none;
+    white-space: nowrap;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1.5px solid var(--rule);
+    border-radius: 34px 8px 30px 9px / 8px 30px 9px 34px;
+    pointer-events: auto;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .nav .signs a:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+  /* how far that section is, the way a distance sign carries it. Same size as
+     the destination and the same colour, so it passes contrast on the amber
+     board too; the hierarchy comes from weight alone. */
+  .nav .signs .km {
+    display: block;
+    font-weight: var(--w-prose);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  /* the car is inside this section: light the board */
+  .nav .signs li.here::before { background: var(--marigold); }
+  .nav .signs li.here a {
+    color: var(--paper);
+    background: var(--marigold);
+    border-color: var(--marigold);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav .signs li, .nav .signs li::before, .nav .signs a { transition: none; }
+  }
+}
+
+/* One vertical rhythm: every section owns 100px above and below itself, so
+   any two sections sit 200px apart, matching the airier gap the full-height
+   About section leaves behind it. */
+section {
+  /* vertical longhands only, so this never fights .wrap over the sides */
+  padding-top: var(--gap-section);
+  padding-bottom: var(--gap-section);
+  scroll-margin-top: 66px;
+}
 
 .head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
 .head h2 { font-size: var(--t-h2); letter-spacing: -0.01em; }
@@ -185,13 +324,22 @@ section { padding: 72px 0; scroll-margin-top: 66px; }
 .underline svg { display: block; width: 100%; height: 100%; overflow: visible; }
 
 
-/* ---------- About: owns the first screen ---------- */
+/* ---------- About: the page opens on the intro ---------- */
+/* Deliberately not min-height: 100vh. Centring the intro in the viewport left a
+   leftover band below it that changed with window height, so the gap into
+   Publications never matched the gap into News. Ordinary section padding keeps
+   every gap on the page at the same 200px. */
 .about {
+  /* The intro owns the first screen: full viewport height with the content
+     centred in it, so nothing below shows until you scroll. Padding is left
+     to `section`, which keeps it symmetric and keeps the bottom gap on the
+     same token as every other boundary. svh first for mobile, where 100vh
+     counts the address bar and overshoots. */
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 92px 0 72px;
   position: relative;
 }
 .about-head { display: flex; align-items: center; gap: 22px; margin-bottom: 24px; }
@@ -269,22 +417,28 @@ section { padding: 72px 0; scroll-margin-top: 66px; }
 .icon-links button:hover .tip,
 .icon-links button:focus-visible .tip,
 .icon-links button.copied .tip { opacity: 1; transform: translateX(-50%) translateY(0); }
-.icon-links button.copied { background: var(--teal); }
+.icon-links button.copied,
+.icon-links button.said { background: var(--teal); }
+
+/* The copy confirmation drifts in and out more slowly than a hover tip, and
+   once it has gone the button stays quiet under a stationary cursor — pushing
+   "Email" back up while the pointer has not moved reads as a glitch. Hovering
+   away and back is what asks for the label again. Keyboard focus is exempt,
+   since there the tip is the only label on offer. */
+.icon-links button.copied .tip,
+.icon-links button.said .tip { transition: opacity 0.34s ease, transform 0.34s ease; }
+.icon-links button.said:hover:not(:focus-visible) .tip {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-4px);
+}
 @media (prefers-reduced-motion: reduce) {
-  .icon-links a, .icon-links button, .icon-links .tip { transition: none; }
+  .icon-links a, .icon-links button, .icon-links .tip,
+  .icon-links button.copied .tip, .icon-links button.said .tip { transition: none; }
 }
 
-.scroll-cue {
-  position: absolute;
-  left: 22px;
-  bottom: 36px;
-  color: var(--ink-soft);
-  border-bottom: 1.6px dashed var(--rule);
-  padding-bottom: 3px;
-  transition: opacity 0.4s ease, color 0.2s ease;
-}
-.scroll-cue:hover { text-decoration: none; color: var(--marigold); border-color: var(--marigold); }
-.scrolled-away .scroll-cue { opacity: 0; pointer-events: none; }
+/* The "Publications & news" scroll cue was dropped along with the full-height
+   About: sitting in the bottom padding, it made that gap read shorter than the
+   others, and Publications is now visible enough to need no prompting. */
 
 /* ---------- Publication cards ---------- */
 .pub {
@@ -455,7 +609,9 @@ footer {
   font-size: var(--t-sm);
   font-weight: var(--w-prose);
 }
-footer .credit { max-width: 72ch; }
+/* No 72ch measure here: it is one short line, not running prose, and the cap
+   was forcing "worked." onto a row of its own. Let it use the column. */
+footer .credit { text-wrap: pretty; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 780px) {
