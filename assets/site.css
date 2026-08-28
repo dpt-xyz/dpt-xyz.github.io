@@ -175,9 +175,9 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
 .nav ul a { color: var(--ink-soft); }
 .nav ul a:hover { color: var(--marigold); text-decoration: none; }
 
-section { padding: 62px 0; scroll-margin-top: 66px; }
-#news { padding-top: 30px; }
-.pubs { padding-bottom: 26px; }
+/* One vertical rhythm: every section owns 72px above and below itself,
+   so the gap between any two sections is a consistent 144px. */
+section { padding: 72px 0; scroll-margin-top: 66px; }
 
 .head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
 .head h2 { font-size: var(--t-h2); letter-spacing: -0.01em; }
@@ -191,7 +191,7 @@ section { padding: 62px 0; scroll-margin-top: 66px; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 92px 0 104px;
+  padding: 92px 0 72px;
   position: relative;
 }
 .about-head { display: flex; align-items: center; gap: 22px; margin-bottom: 24px; }
@@ -295,6 +295,7 @@ section { padding: 62px 0; scroll-margin-top: 66px; }
   margin-bottom: 26px;
   overflow: hidden;
 }
+.pub:last-child { margin-bottom: 0; }
 /* detection-box corner brackets */
 .pub::before, .pub::after {
   content: "";
